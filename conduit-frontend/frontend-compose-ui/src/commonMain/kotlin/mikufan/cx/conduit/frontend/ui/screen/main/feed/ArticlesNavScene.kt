@@ -48,7 +48,7 @@ data class ArticlesTwoPaneScene<T : Any>(
  * Strategy calculating whether to display a two-pane layout or fall back to single pane.
  *
  * If [isDualPane] is true and at least two entries exist (list + detail), produces [ArticlesTwoPaneScene].
- * Otherwise returns null to let NavDisplay fall back to standard SinglePaneSceneStrategy.
+ * Otherwise, returns null to let NavDisplay fall back to standard SinglePaneSceneStrategy.
  */
 @Immutable
 class ArticlesTwoPaneSceneStrategy<T : Any>(

@@ -1,6 +1,7 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
 import com.arkivanov.mvikotlin.core.store.Bootstrapper
+import com.arkivanov.mvikotlin.core.store.Executor
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
@@ -30,77 +31,9 @@ class MainNavStoreFactory(
       generation = initialGeneration,
     )
 
-    val executor =
-      coroutineExecutorFactory<MainNavIntent, Action, MainNavState, Msg, Nothing>(dispatcher) {
-        onAction<Action.UserConfigEmitted> { action ->
-          val currentState = state()
-          if (!currentState.isReady) {
-            val msg = reconcileInitialState(action.userConfig, restoredSnapshot)
-            log.info { "Reconciled initial MainNav state: isReady=true, pageIndex=${msg.pageIndex}, generation=${msg.generation}" }
-            dispatch(msg)
-          } else {
-            when (val userConfig = action.userConfig) {
-              is UserConfigState.Landing,
-              is UserConfigState.OnUrl -> {
-                if (currentState.isLoggedIn) {
-                  log.info { "User logged out; resetting MainNav to guest Feed" }
-                  dispatch(Msg.LiveSwitchToNotLoggedIn(newGeneration = currentState.generation + 1L))
-                }
-              }
-              is UserConfigState.OnLogin -> {
-                val targetUsername = userConfig.userInfo.username
-                if (!currentState.isLoggedIn || currentState.currentUsername != targetUsername) {
-                  log.info { "User switched/logged in as $targetUsername; resetting to Feed" }
-                  dispatch(Msg.LiveSwitchToLoggedIn(targetUsername, newGeneration = currentState.generation + 1L))
-                }
-              }
-            }
-          }
-        }
+    val executor = createExecutor(restoredSnapshot)
 
-        onIntent<MainNavIntent.MenuIndexSwitching> { intent ->
-          val currentState = state()
-          if (!currentState.isReady) {
-            log.warn { "Ignored MenuIndexSwitching intent before MainNav is reconciled" }
-            return@onIntent
-          }
-
-          val targetIndex = intent.targetIndex
-          require(targetIndex in 0 until currentState.menuItems.size) {
-            "Target index $targetIndex is out of bounds. Valid range: 0-${currentState.menuItems.size - 1}, menuItems: ${currentState.menuItems}"
-          }
-          if (currentState.pageIndex != targetIndex) {
-            log.info { "Switching to page at index $targetIndex" }
-            dispatch(Msg.MenuIndexSwitching(targetIndex, newGeneration = currentState.generation + 1L))
-          }
-        }
-      }
-
-    val reducer = Reducer<MainNavState, Msg> { msg ->
-      when (msg) {
-        is Msg.Reconcile -> MainNavState.notLoggedIn().with(
-          menuItems = msg.menuItems,
-          pageIndex = msg.pageIndex,
-          isReady = true,
-          generation = msg.generation,
-        )
-        is Msg.LiveSwitchToNotLoggedIn -> MainNavState.notLoggedIn(
-          pageIndex = 0,
-          isReady = true,
-          generation = msg.newGeneration,
-        )
-        is Msg.LiveSwitchToLoggedIn -> MainNavState.loggedIn(
-          username = msg.username,
-          pageIndex = 0,
-          isReady = true,
-          generation = msg.newGeneration,
-        )
-        is Msg.MenuIndexSwitching -> with(
-          pageIndex = msg.targetIndex,
-          generation = msg.newGeneration,
-        )
-      }
-    }
+    val reducer = createReducer()
 
     return storeFactory.create(
       name = "MainNavStore",
@@ -111,6 +44,92 @@ class MainNavStoreFactory(
       reducer = reducer,
     )
   }
+
+  private fun createReducer(): Reducer<MainNavState, Msg> = Reducer<MainNavState, Msg> { msg ->
+    when (msg) {
+      is Msg.Reconcile -> MainNavState.notLoggedIn().with(
+        menuItems = msg.menuItems,
+        pageIndex = msg.pageIndex,
+        isReady = true,
+        generation = msg.generation,
+      )
+
+      is Msg.LiveSwitchToNotLoggedIn -> MainNavState.notLoggedIn(
+        pageIndex = 0,
+        isReady = true,
+        generation = msg.newGeneration,
+      )
+
+      is Msg.LiveSwitchToLoggedIn -> MainNavState.loggedIn(
+        username = msg.username,
+        pageIndex = 0,
+        isReady = true,
+        generation = msg.newGeneration,
+      )
+
+      is Msg.MenuIndexSwitching -> with(
+        pageIndex = msg.targetIndex,
+        generation = msg.newGeneration,
+      )
+    }
+  }
+
+  private fun createExecutor(restoredSnapshot: MainNavSavedSnapshot?): () -> Executor<MainNavIntent, Action, MainNavState, Msg, Nothing> =
+    coroutineExecutorFactory<MainNavIntent, Action, MainNavState, Msg, Nothing>(dispatcher) {
+      onAction<Action.UserConfigEmitted> { action ->
+        val currentState = state()
+        if (!currentState.isReady) {
+          val msg = reconcileInitialState(action.userConfig, restoredSnapshot)
+          log.info { "Reconciled initial MainNav state: isReady=true, pageIndex=${msg.pageIndex}, generation=${msg.generation}" }
+          dispatch(msg)
+        } else {
+          when (val userConfig = action.userConfig) {
+            is UserConfigState.Landing,
+            is UserConfigState.OnUrl -> {
+              if (currentState.isLoggedIn) {
+                log.info { "User logged out; resetting MainNav to guest Feed" }
+                dispatch(Msg.LiveSwitchToNotLoggedIn(newGeneration = currentState.generation + 1L))
+              }
+            }
+
+            is UserConfigState.OnLogin -> {
+              val targetUsername = userConfig.userInfo.username
+              if (!currentState.isLoggedIn || currentState.currentUsername != targetUsername) {
+                log.info { "User switched/logged in as $targetUsername; resetting to Feed" }
+                dispatch(
+                  Msg.LiveSwitchToLoggedIn(
+                    targetUsername,
+                    newGeneration = currentState.generation + 1L
+                  )
+                )
+              }
+            }
+          }
+        }
+      }
+
+      onIntent<MainNavIntent.MenuIndexSwitching> { intent ->
+        val currentState = state()
+        if (!currentState.isReady) {
+          log.warn { "Ignored MenuIndexSwitching intent before MainNav is reconciled" }
+          return@onIntent
+        }
+
+        val targetIndex = intent.targetIndex
+        require(targetIndex in 0 until currentState.menuItems.size) {
+          "Target index $targetIndex is out of bounds. Valid range: 0-${currentState.menuItems.size - 1}, menuItems: ${currentState.menuItems}"
+        }
+        if (currentState.pageIndex != targetIndex) {
+          log.info { "Switching to page at index $targetIndex" }
+          dispatch(
+            Msg.MenuIndexSwitching(
+              targetIndex,
+              newGeneration = currentState.generation + 1L
+            )
+          )
+        }
+      }
+    }
 
   private fun createBootstrapper(): Bootstrapper<Action> =
     coroutineBootstrapper(dispatcher) {

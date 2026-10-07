@@ -47,8 +47,8 @@ fun DefaultRootCompositionLocalsProvider(content: @Composable () -> Unit) {
 }
 
 private class DefaultSavedStateRegistryOwner : SavedStateRegistryOwner {
-  private val lifecycleRegistry = LifecycleRegistry(this)
-  override val lifecycle: Lifecycle get() = lifecycleRegistry
+  override val lifecycle: Lifecycle
+    field = LifecycleRegistry(this)
 
   private val controller = SavedStateRegistryController.create(this)
   override val savedStateRegistry: SavedStateRegistry get() = controller.savedStateRegistry
@@ -59,11 +59,11 @@ private class DefaultSavedStateRegistryOwner : SavedStateRegistryOwner {
     // 2. Controller restore must happen before lifecycle moves to STARTED
     controller.performRestore(null)
     // 3. Move to CREATED -> STARTED -> RESUMED
-    lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+    lifecycle.currentState = Lifecycle.State.RESUMED
   }
 
   fun teardown() {
-    lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+    lifecycle.currentState = Lifecycle.State.DESTROYED
   }
 }
 

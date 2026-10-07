@@ -3,9 +3,7 @@ package mikufan.cx.conduit.frontend.ui.theme
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.window.core.layout.WindowHeightSizeClass
 import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
 
 /**
  * Defines the spacing and padding system for the application UI.
@@ -195,23 +193,18 @@ object SpacingDefaults {
    *
    * @param windowSizeClass The current window size classification
    * @return A [Space] object with appropriate horizontal and vertical spacing values
-   * @throws IllegalStateException if an unknown window size class is encountered
    */
   fun calculateSpacing(windowSizeClass: WindowSizeClass): Space {
-    val windowWidthSizeClass = windowSizeClass.windowWidthSizeClass
-    val windowHeightSizeClass = windowSizeClass.windowHeightSizeClass
-    val horizontalSpace = when (windowWidthSizeClass) {
-      WindowWidthSizeClass.COMPACT -> compactHorizontalSpace
-      WindowWidthSizeClass.MEDIUM -> mediumHorizontalSpace
-      WindowWidthSizeClass.EXPANDED -> expandedHorizontalSpace
-      else -> error("What is this window width size class: $windowWidthSizeClass")
+    val horizontalSpace = when {
+      windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> expandedHorizontalSpace
+      windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> mediumHorizontalSpace
+      else -> compactHorizontalSpace
     }
 
-    val verticalSpace = when (windowHeightSizeClass) {
-      WindowHeightSizeClass.COMPACT -> compactVerticalSpace
-      WindowHeightSizeClass.MEDIUM -> medianVerticalSpace
-      WindowHeightSizeClass.EXPANDED -> expandedVerticalSpace
-      else -> error("What is this window height size class: $windowHeightSizeClass")
+    val verticalSpace = when {
+      windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> expandedVerticalSpace
+      windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> medianVerticalSpace
+      else -> compactVerticalSpace
     }
 
     return Space(horizontal = horizontalSpace, vertical = verticalSpace)

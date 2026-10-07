@@ -47,7 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
@@ -216,8 +216,10 @@ private fun Profile(
   imageUrl: String,
   modifier: Modifier = Modifier
 ) {
-  val widthClass = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
-  val shouldExpand by remember(widthClass) { derivedStateOf { widthClass != WindowWidthSizeClass.COMPACT } }
+  val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+  val shouldExpand by remember(windowSizeClass) {
+    derivedStateOf { windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) }
+  }
 
 
   if (shouldExpand) {

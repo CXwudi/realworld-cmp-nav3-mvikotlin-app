@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import mikufan.cx.conduit.frontend.logic.AppDependencies
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListViewModel
@@ -41,7 +41,7 @@ fun ArticlesNavPage(
 
   val windowAdaptiveInfo = currentWindowAdaptiveInfo()
   val isDualPane = remember(windowAdaptiveInfo) {
-    windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
+    windowAdaptiveInfo.windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
   }
 
   val sceneStrategy = remember(isDualPane) {

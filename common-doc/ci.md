@@ -9,3 +9,5 @@ Direct commits, untested merges, failed or pending PR tests, and missing verific
 New PR runs cancel older runs for that PR. Master runs are not cancelled by newer commits. AI review and triage workflows have been removed.
 
 The shared decision helper is `.github/scripts/ci-should-run.cjs`. Verify its behavior with `node --test .github/scripts/ci-should-run.test.cjs` and validate the workflows with `actionlint`.
+
+Backend tests override the database configuration with `DB_URL`, `DB_USER`, and `DB_PASSWORD`. Hoplite 3 uses a single underscore for nested property paths (for example, `DB_URL` binds to `db.url`); the old double-underscore names no longer override the YAML defaults. Use these names for runtime database overrides as well.
