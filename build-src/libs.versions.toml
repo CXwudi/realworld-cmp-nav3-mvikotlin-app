@@ -12,20 +12,20 @@
 kotlin = "2.4.20"
 ksp = "2.3.12"
 java = "25"
-agp = "9.4.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
+agp = "9.4.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "37"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
-compose = "1.12.0"
+compose = "1.12.1"
 compose-material3 = "1.9.0"
-compose-adaptive = "1.2.0"
-coil = "3.6.2"
+compose-adaptive = "1.3.0"
+coil = "3.6.3"
 multiplatform-markdown-renderer = "0.45.0"
 
 androidx-lifecycle = "2.11.0"
 androidx-navigation3 = "1.1.1"
-androidx-savedstate = "1.4.0"
-robolectric = "4.16.1"
+androidx-savedstate = "1.5.0"
+robolectric = "4.17"
 
 mvikotlin = "4.4.0"
 koin = "4.2.2"
@@ -37,7 +37,7 @@ ktorfit-converter = "2.7.5"
 ktorfit-compilerPlugin = "2.3.5"
 
 junit = "6.1.3"
-http4k = "6.60.0.0"
+http4k = "6.61.0.0"
 exposed = "1.5.0"
 
 [libraries]
@@ -54,7 +54,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.9.2"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.9.3"
 
 # Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
@@ -80,7 +80,7 @@ dev-frontend-markdownRenderer-m3 = { module = "com.mikepenz:multiplatform-markdo
 dev-frontend-markdownRenderer-coil3 = { module = "com.mikepenz:multiplatform-markdown-renderer-coil3", version.ref = "multiplatform-markdown-renderer" }
 dev-frontend-markdownRenderer-code = { module = "com.mikepenz:multiplatform-markdown-renderer-code", version.ref = "multiplatform-markdown-renderer" }
 
-dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.19-0" # can't make kotlin-logging's android native log works for debug level, slf4j-android still works the best
+dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.20-0" # can't make kotlin-logging's android native log works for debug level, slf4j-android still works the best
 
 dev-frontend-ktorBom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
 dev-frontend-ktorfitLibLight = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "ktorfit-lib" }
@@ -91,7 +91,7 @@ dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", vers
 dev-frontend-kotlinxBrowser = "org.jetbrains.kotlinx:kotlinx-browser:0.5.0" # see https://kotlinlang.org/docs/wasm-js-interop.html#web-related-browser-apis
 
 # android
-dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.19.0"
+dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.19.1"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.8.0"
 dev-frontend-androidx-lifecycleKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.13.0"
@@ -117,8 +117,8 @@ dev-frontend-test-robolectric = { module = "org.robolectric:robolectric", versio
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:3.0.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.13"
 dev-backend-hikari = "com.zaxxer:HikariCP:7.1.0"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.6.3"
-dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.19"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.6.5"
+dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.20"
 dev-backend-jwt = "com.auth0:java-jwt:4.6.1"
 
 # plugin dep
@@ -127,13 +127,13 @@ pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-grad
 pluginDep-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 pluginDep-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.5.0"
+pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.5.1"
 # Just a placeholder to let renovatebot detect and automatically update the compiler plugin version. The actual value is consumed by ktorfit { compilerPluginVersion.set(...) }.
 pluginDep-ktorfitCompilerPlugin = { module = "de.jensklingenberg.ktorfit:compiler-plugin", version.ref = "ktorfit-compilerPlugin" }
 
 
 # setting plugin dep
-settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.5.1"
+settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.6.0"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:1.0.0"
 
 [plugins]
@@ -148,4 +148,4 @@ kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kot
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit-plugin" }
 # a plugin used by gradle files for precompiled script plugin
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.1.1" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.1.2" }
