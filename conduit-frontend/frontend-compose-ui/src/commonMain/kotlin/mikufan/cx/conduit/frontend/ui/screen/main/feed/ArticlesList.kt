@@ -58,6 +58,7 @@ import coil3.compose.rememberAsyncImagePainter
 import coil3.compose.rememberConstraintsSizeResolver
 import coil3.request.ImageRequest
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
@@ -92,7 +93,7 @@ fun ArticlesList(
  */
 @Composable
 fun ArticlesList(
-  state: kotlinx.coroutines.flow.StateFlow<ArticlesListState>,
+  state: StateFlow<ArticlesListState>,
   labels: Flow<ArticlesListLabel>,
   onSend: (ArticlesListIntent) -> Unit,
   modifier: Modifier = Modifier,
