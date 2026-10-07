@@ -33,6 +33,10 @@ The `frontend-compose-ui` module implements the UI layer with Compose Multiplatf
    - `ArticlesTwoPaneSceneStrategy` switches between a two-pane layout (250dp list pane on wide screens) and a single-pane fallback on compact screens.
    - Retains active ViewModel instances across resize/rotation and clears removed entries.
 
+### Navigation 3 dependency compatibility
+
+Navigation 3 remains on `1.1.1`. Version `1.1.2` leaves the list blank after switching from two panes to compact mode and popping the detail entry, as covered by `ArticlesNavDisplayOwnershipTest`. The failure persists after waiting for the destination to appear; reverting only Navigation 3 restores all six JVM UI tests with the other dependency updates retained. Renovate excludes only `1.1.2`, allowing later releases to be tested normally. Keep the ownership test enabled when evaluating those releases.
+
 ## Root Composition Locals
 
 Platforms configure root owners consistently:
