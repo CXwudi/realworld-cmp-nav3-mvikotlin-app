@@ -35,7 +35,9 @@ The `frontend-compose-ui` module implements the UI layer with Compose Multiplatf
 
 ### Navigation 3 dependency compatibility
 
-Navigation 3 remains on `1.1.1`. Version `1.1.2` leaves the list blank after switching from two panes to compact mode and popping the detail entry, as covered by `ArticlesNavDisplayOwnershipTest`. The failure persists after waiting for the destination to appear; reverting only Navigation 3 restores all six JVM UI tests with the other dependency updates retained. Renovate excludes only `1.1.2`, allowing later releases to be tested normally. Keep the ownership test enabled when evaluating those releases.
+Navigation 3 remains on `1.1.1` as a temporary compatibility workaround. With `1.1.2`, `ArticlesNavDisplayOwnershipTest` cannot find the list after switching from two panes to compact mode and popping the detail entry. This test exercises the production scene strategy and root ownership provider inside a test-owned navigation host; it does not render `ArticlesNavPage`, so the failure alone does not establish a production-screen defect or an upstream library bug.
+
+After merging the frontend refactor and deprecation cleanup from `master`, the unchanged test failed in three consecutive local runs with `1.1.2`. A diagnostic variant also failed with state mutations on the UI thread and two seconds of explicit Compose test-clock advancement after each transition. These results make a simple insufficient-wait explanation less likely, but do not rule out all ordering problems. With `1.1.1`, the frontend JVM logic and all six UI tests pass. Renovate excludes only `1.1.2`, allowing later releases to be tested normally. Keep the ownership test enabled while investigating the cause.
 
 ## Root Composition Locals
 
